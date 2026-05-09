@@ -1,6 +1,6 @@
 # CardioAI
 
->I can't replace a cardiologist. But I built something that knows when you need one.
+>The heart speaks in numbers. I just learned to listen.
 
 An end-to-end ML pipeline for cardiovascular risk assessment — benchmarked five classification algorithms, selected KNN at 88.6% accuracy, and deployed as a production-ready Streamlit web app with real-time risk scoring and interactive clinical analytics.
 
