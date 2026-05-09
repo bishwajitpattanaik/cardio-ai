@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import joblib
 import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
@@ -53,9 +52,6 @@ html, body, [data-testid="stAppViewContainer"] {
     margin: 0 -2rem 2.5rem -2rem;
     position: relative;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 .hero::before {
     content: '';
@@ -173,9 +169,6 @@ html, body, [data-testid="stAppViewContainer"] {
     padding: 2.5rem;
     text-align: center;
     box-shadow: 0 0 40px rgba(232,54,93,0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 .result-low {
     background: linear-gradient(135deg, rgba(0,212,160,0.12), rgba(0,212,160,0.03));
@@ -184,9 +177,6 @@ html, body, [data-testid="stAppViewContainer"] {
     padding: 2.5rem;
     text-align: center;
     box-shadow: 0 0 40px rgba(0,212,160,0.15);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 .result-icon { font-size: 3.5rem; display: block; margin-bottom: 0.8rem; }
 .result-title {
@@ -325,10 +315,27 @@ label[data-testid="stWidgetLabel"] p {
 # ─── LOAD MODEL ───────────────────────────────────────────────────────────────
 @st.cache_resource
 def load_artifacts():
-    model    = joblib.load("knn_heart_model.pkl")
-    scaler   = joblib.load("scaler.pkl")
-    columns  = joblib.load("columns.pkl")
-    return model, scaler, columns
+    from sklearn.model_selection import train_test_split
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.neighbors import KNeighborsClassifier
+
+    df = pd.read_csv("heart.csv")
+    df_encoded = pd.get_dummies(df, drop_first=True)
+
+    X = df_encoded.drop("HeartDisease", axis=1)
+    y = df_encoded["HeartDisease"]
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, stratify=y, test_size=0.2, random_state=42
+    )
+
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+
+    model = KNeighborsClassifier()
+    model.fit(X_train_scaled, y_train)
+
+    return model, scaler, X.columns.tolist()
 
 model, scaler, expected_columns = load_artifacts()
 
@@ -338,8 +345,8 @@ st.markdown("""
     <span class="hero-pulse">🫀</span>
     <div class="hero-badge">AI-Powered · KNN Classifier · Clinical Grade</div>
     <h1 class="hero-title">Cardio<span>AI</span></h1>
-    <p class="hero-sub"><b>Advanced heart disease risk assessment tool by Bishwajit Pattanaik</b></p>
-    <p class="hero-sub"><b>Enter your clinical measurements below</b></p>
+    <p class="hero-sub" style="text-align:center;width:100%;display:block;"><b>Advanced heart disease risk assessment tool by Bishwajit Pattanaik</b></p>
+    <p class="hero-sub" style="text-align:center;width:100%;display:block;"><b>Enter your clinical measurements below</b></p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -470,7 +477,10 @@ with tab1:
             <div class="result-high">
                 <span class="result-icon">⚠️</span>
                 <p class="result-title">Elevated Cardiac Risk Detected</p>
-                <p class="result-desc">The model estimates a <strong style="color:#ff6b6b">{risk_pct}%</strong> probability of heart disease based on the provided biomarkers. Immediate consultation with a cardiologist is strongly recommended.</p>
+                <p class="result-desc" style="text-align:center;width:100%;display:block;">
+                    The model estimates a <strong style="color:#ff6b6b">{risk_pct}%</strong> probability of heart disease based on the provided biomarkers.
+                    Immediate consultation with a cardiologist is strongly recommended.
+                </p>
             </div>
             """, unsafe_allow_html=True)
         else:
@@ -478,7 +488,10 @@ with tab1:
             <div class="result-low">
                 <span class="result-icon">✅</span>
                 <p class="result-title">Low Cardiac Risk Profile</p>
-                <p class="result-desc">The model estimates a <strong style="color:#00d4a0">{risk_pct}%</strong> probability of heart disease. Continue maintaining a healthy lifestyle and schedule regular check-ups.</p>
+                <p class="result-desc" style="text-align:center;width:100%;display:block;">
+                    The model estimates a <strong style="color:#00d4a0">{risk_pct}%</strong> probability of heart disease.
+                    Continue maintaining a healthy lifestyle and schedule regular check-ups.
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
