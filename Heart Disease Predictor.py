@@ -145,6 +145,7 @@ for name, model in models.items():
 #we can do this by using pickle module as we can assume model as an object
 #we have to save knn model, knn scalar object, and list of columns
 
+#pip install joblib
 #import joblib library
 #used to save and load trained machine learning models efficiently
 import joblib
@@ -162,7 +163,9 @@ joblib.dump(scaler, 'scaler.pkl')
 #needed later to match input columns during prediction
 joblib.dump(X.columns.tolist(), 'columns.pkl')
 
-
+#but using no .pkl files for this project 
+#instead, the model trains on startup from heart.csv using @st.cache_resource
+#version-safe across all Python/sklearn environments
 
 
 
