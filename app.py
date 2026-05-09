@@ -524,7 +524,7 @@ with tab1:
                 font={'color': '#eef0f4', 'family': 'Syne'},
                 margin=dict(l=20, r=20, t=30, b=20), height=250
             )
-            st.plotly_chart(fig_gauge, use_container_width=True)
+            st.plotly_chart(fig_gauge, width='stretch')
 
         with col_f:
             st.markdown("<div class='section-label'>Feature Contribution (Normalized)</div>", unsafe_allow_html=True)
@@ -610,7 +610,7 @@ with tab2:
             )
             fig1.update_xaxes(gridcolor='#232832', linecolor='#232832')
             fig1.update_yaxes(gridcolor='#232832', linecolor='#232832')
-            st.plotly_chart(fig1, use_container_width=True)
+            st.plotly_chart(fig1, width='stretch')
 
         # Chest pain breakdown
         with col_b:
@@ -629,7 +629,7 @@ with tab2:
             )
             fig2.update_xaxes(gridcolor='#232832', linecolor='#232832')
             fig2.update_yaxes(gridcolor='#232832', linecolor='#232832')
-            st.plotly_chart(fig2, use_container_width=True)
+            st.plotly_chart(fig2, width='stretch')
 
         col_c, col_d = st.columns(2)
 
@@ -649,7 +649,7 @@ with tab2:
             )
             fig3.update_xaxes(gridcolor='#232832', linecolor='#232832')
             fig3.update_yaxes(gridcolor='#232832', linecolor='#232832')
-            st.plotly_chart(fig3, use_container_width=True)
+            st.plotly_chart(fig3, width='stretch')
 
         # ST Slope distribution
         with col_d:
@@ -668,17 +668,17 @@ with tab2:
             )
             fig4.update_xaxes(gridcolor='#232832', linecolor='#232832')
             fig4.update_yaxes(gridcolor='#232832', linecolor='#232832')
-            st.plotly_chart(fig4, use_container_width=True)
+            st.plotly_chart(fig4, width='stretch')
 
         # ── RAW DATA PREVIEW ──
         st.markdown("<div class='custom-divider'></div>", unsafe_allow_html=True)
         st.markdown("<div class='section-label'>Raw Data</div><div class='section-title'>Dataset Preview</div>", unsafe_allow_html=True)
         st.dataframe(
-            df.head(20).style.applymap(
+            df.head(20).style.map(
                 lambda v: 'color: #e8365d; font-weight: bold' if v == 1 and isinstance(v, (int, float)) else '',
                 subset=['HeartDisease']
             ),
-            use_container_width=True, height=350
+            width='stretch', height=350
         )
     else:
         st.info("Place `heart.csv` in the same directory as app.py to view dataset insights.")
